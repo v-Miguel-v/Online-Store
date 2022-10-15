@@ -1,25 +1,37 @@
+/* Initial & Global Values */
 const DATA = require("./data.js");
 const express = require("express");
 const app = express();
 const port = 3000;
 
+/* Helpers */
+function searchInDataById(itemId, data) {
+	let itemFound = null;
+	itemId = Number(itemId);
+	
+	data.forEach(item => {if (item.id === itemId) itemFound = item});
+	return itemFound;
+}
+
+/* HTTP Requests */
+// GET Requests
 app.get("/", getMainPage);
 app.get("/example-route", getExampleRoutePage);
 app.listen(port, () => { console.log(`El servidor está corriendo en el puerto ${port}`); });
 
 app.get("/users", getUsers);
-//	app.get("/users/:userId", getUserById);
+	app.get("/users/:userId", getUserById);
 	
 app.get("/products", getProducts);
-//	app.get("/products/:productId", getProductById);
+	app.get("/products/:productId", getProductById);
 	
 app.get("/categories", getCategories);
-//	app.get("/categories/:categoryId", getCategoryById);
-//	app.get("/categories/:categoryId/products", getProductsByCategory);
-//	app.get("/categories/:categoryId/products/:productId", getProductByIdFromCategory);
-	
-/* PÁGINAS */
+	app.get("/categories/:categoryId", getCategoryById);
+	app.get("/categories/:categoryId/products", getProductsByCategory);
+	app.get("/categories/:categoryId/products/:productId", getProductByIdFromCategory);
 
+
+/* PÁGINAS */
 // Página Principal
 function getMainPage(request, response) {
 	response.send(`
@@ -47,7 +59,78 @@ function getExampleRoutePage(request, response) {
 }
 
 /* END POINTS */
+// ./Users
+function getUsers(request, response) { response.json(DATA.users); }
 
-function getUsers(request, response) { response.json(DATA.users); } // Users
-function getProducts(request, response) { response.json(DATA.products); } // Products
-function getCategories(request, response) { response.json(DATA.categories); } // Categories
+// ./Users/{id}
+function getUserById(request, response) {
+	const { userId } = request.params;
+	let userFound = searchInDataById(userId, DATA.users);
+	
+	if (!userFound) {
+		response.send("No se encontró la información solicitada");
+	} else {
+		response.json(userFound);
+	}
+}
+
+// ./Products
+function getProducts(request, response) { response.json(DATA.products); }
+
+// ./Products/{productId}
+function getProductById(request, response) {
+	const { productId } = request.params;
+	let productFound = searchInDataById(productId, DATA.products);
+	
+	if (!productFound) {
+		response.send("No se encontró la información solicitada");
+	} else {
+		response.json(productFound);
+	}
+}
+
+// ./Categories
+function getCategories(request, response) { response.json(DATA.categories); }
+
+// ./Categories/{categoryId}
+function getCategoryById(request, response) {
+	const { categoryId } = request.params;
+	let categoryFound = searchInDataById(categoryId, DATA.categories);
+	
+	if (!categoryFound) {
+		response.send("No se encontró la información solicitada");
+	} else {
+		response.json(categoryFound);
+	}
+}
+
+// ./Categories/{categoryId}/products
+function getProductsByCategory(request, response) {
+	const { categoryId } = request.params;
+	let categoryFound = searchInDataById(categoryId, DATA.categories);
+	
+	if (!categoryFound) {
+		response.send("No se encontró la información solicitada");
+	} else {
+		response.json(DATA.products.filter(product => product.category.id === categoryFound.id));
+	}
+}
+
+// ./Categories/{categoryId}/products/{productId}
+function getProductByIdFromCategory(request, response) {
+	const { categoryId, productId } = request.params;
+	let categoryFound = searchInDataById(categoryId, DATA.categories);
+	
+	if (!categoryFound) {
+		response.send("No se encontró la información solicitada");
+	} else {
+		const categoryProducts = DATA.products.filter(product => product.category.id === categoryFound.id);
+		let productFound = searchInDataById(productId, categoryProducts);
+		
+		if (productFound) {
+			response.json(productFound);
+		} else {
+			response.send("No se encontró la información solicitada");
+		}
+	}
+}

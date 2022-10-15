@@ -10,7 +10,7 @@ class Product {
 	constructor(id, name, price, category) {
 		this.id = id,
 		this.name = name,
-		this.price = price
+		this.price = price,
 		this.category = category
 	}
 }
@@ -31,8 +31,7 @@ const users = [
 	new User(4, "Mike", 18),
 	new User(5, "Rafael", 40),
 	new User(6, "Oriana", 20),
-	new User(7, "María", 31),
-	new User(8, "Alejandra", 33),
+	new User(7, "Ania", 31)
 ];
 
 // Categories
@@ -41,8 +40,9 @@ const sports = new Category(1, "Sports");
 const cleaning = new Category(2, "Cleaning");
 const appliances = new Category(3, "Appliances");
 const furniture = new Category(4, "Furniture");
+const random = new Category(5, "Random");
 
-const categories = [ clothing, sports, cleaning, appliances, furniture ];
+const categories = [ clothing, sports, cleaning, appliances, furniture, random ];
 
 // Products
 const products = [
@@ -69,7 +69,9 @@ const products = [
 	new Product(16, "Sofa", 890, furniture),
 	new Product(17, "Bed", 900, furniture),
 	new Product(18, "Table", 500, furniture),
-	new Product(19, "Chair", 130, furniture)
+	new Product(19, "Chair", 130, furniture),
+	
+	new Product(20, "Pensaste que era un producto cualquiera de la API, pero era yo: ¡DIO!", 710, random)
 ];
 
 // ALL DATA
