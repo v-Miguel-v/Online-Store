@@ -1,0 +1,38 @@
+{
+  "name": "online-store-api",
+  "version": "1.0.0",
+  "description": "Una simple API de una tiendita online diseñada como resultado del \"Curso de Backend con Node.js: API REST con Express.js\" de Platzi.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "lint": "eslint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/v-Miguel-v/Online-Store.git"
+  },
+  "keywords": [
+    "api-rest",
+    "nodejs",
+    "expressjs",
+    "platzi-course",
+    "backend"
+  ],
+  "author": "Miguel Velásquez <vmiguel.xy@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/v-Miguel-v/Online-Store/issues"
+  },
+  "homepage": "https://github.com/v-Miguel-v/Online-Store#readme",
+  "devDependencies": {
+    "eslint": "^8.25.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "nodemon": "^2.0.20",
+    "prettier": "^2.7.1"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
