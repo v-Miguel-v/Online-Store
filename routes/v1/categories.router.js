@@ -1,5 +1,5 @@
-const DATA = require("../data");
-const helpers = require("../helpers");
+const DATA = require("../../data");
+const helpers = require("../../helpers");
 const express = require("express");
 const router = express.Router();
 

@@ -1,18 +1,15 @@
-const DATA = require("../data");
-const helpers = require("../helpers");
+const DATA = require("../../data");
+const helpers = require("../../helpers");
 const express = require("express");
 const router = express.Router();
 
 /* HTTP Requests */
-// GET Requests
-router.get("/", getUsers);
-router.get("/:userId", getUserById);
 
-/* ENDPOINTS */
-// ./Users
+// GET Requests
+router.get("/", getUsers); // ./Users
 function getUsers(request, response) { response.json(DATA.users); }
 
-// ./Users/{id}
+router.get("/:userId", getUserById); // ./Users/{id}
 function getUserById(request, response) {
 	const { userId } = request.params;
 	let userFound = helpers.searchInDataById(userId, DATA.users);
@@ -23,6 +20,19 @@ function getUserById(request, response) {
 		response.json(userFound);
 	}
 }
+
+// POST Requests
+router.post("/", createUser);
+function createUser(request, response) { response.json(DATA.users); }
+/*
+function createProduct(request, response) {
+	const body = request.body;
+	response.json({
+		message: "created",
+		data: body
+	});
+}
+*/
 
 /* Export */
 module.exports = router;

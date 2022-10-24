@@ -1,3 +1,7 @@
+// File System Module
+const fs = require("fs");
+
+// Data Types
 class User {
 	constructor(id, name, age) {
 		this.id = id,
@@ -22,57 +26,58 @@ class Category {
 	}
 }
 
+// Register
+function readRegister(path) {
+	try {
+		console.log("Leyendo registros");
+		return fs.readFileSync(path, "utf-8");
+	} catch (error) {
+		console.error(error);
+		return null;
+	}
+}
+
+// Parser
+function parseData(data) {
+	let usersParsed = null;
+	if (data) {
+		const usersUnparsed = data.split("\r\n");
+		usersParsed = usersUnparsed.map(user => JSON.parse(user));
+	}
+	return usersParsed;
+}
+
 // Users
-const users = [
-	new User(0, "Miguel", 22),
-	new User(1, "Luis", 25),
-	new User(2, "Gabriela", 32),
-	new User(3, "Alondra", 19),
-	new User(4, "Mike", 18),
-	new User(5, "Rafael", 40),
-	new User(6, "Oriana", 20),
-	new User(7, "Ania", 31)
-];
+const users = [];
+const usersUnparsedData = readRegister("./data/users.data.txt");
+const usersParsedData = parseData(usersUnparsedData);
+usersParsedData.forEach(user => users.push(new User(user.id, user.name, user.age)));
+console.group("Users:");
+	console.table(users);
+console.groupEnd("Users:");
 
 // Categories
-const clothing = new Category(0, "Clothing");
-const sports = new Category(1, "Sports");
-const cleaning = new Category(2, "Cleaning");
-const appliances = new Category(3, "Appliances");
-const furniture = new Category(4, "Furniture");
-const random = new Category(5, "Random");
-
-const categories = [ clothing, sports, cleaning, appliances, furniture, random ];
+const categories = [];
+const categoriesUnparsedData = readRegister("./data/categories.data.txt");
+const categoriesParsedData = parseData(categoriesUnparsedData);
+categoriesParsedData.forEach(category => categories.push(new Category(category.id, category.name)));
+console.group("Categories:");
+	console.table(categories);
+console.groupEnd("Categories:");
 
 // Products
-const products = [
-	new Product(0, "T-Shirt", 205, clothing),
-	new Product(1, "Jeans", 210, clothing),
-	new Product(2, "Cool Shoes", 800, clothing),
-	new Product(3, "Hat", 70, clothing),
-	
-	new Product(4, "Soccer Ball", 510, sports),
-	new Product(5, "Tennis Racquet", 130, sports),
-	new Product(6, "Boxing Gloves", 650, sports),
-	new Product(7, "Bicycle", 1800, sports),
-	
-	new Product(8, "Disinfectant", 150, cleaning),
-	new Product(9, "Chlorine", 120, cleaning),
-	new Product(10, "Soap", 15, cleaning),
-	new Product(11, "Sponge", 8, cleaning),
-	
-	new Product(12, "Microwave", 1000, appliances),
-	new Product(13, "Refrigerator", 2990, appliances),
-	new Product(14, "Toaster", 770, appliances),
-	new Product(15, "Washing Machine", 2500, appliances),
-	
-	new Product(16, "Sofa", 890, furniture),
-	new Product(17, "Bed", 900, furniture),
-	new Product(18, "Table", 500, furniture),
-	new Product(19, "Chair", 130, furniture),
-	
-	new Product(20, "Pensaste que era un producto cualquiera de la API, pero era yo: ¡DIO!", 710, random)
-];
+const products = [];
+const productsUnparsedData = readRegister("./data/products.data.txt");
+const productsParsedData = parseData(productsUnparsedData);
+productsParsedData.forEach(product => products.push(new Product(
+	product.id,
+	product.name,
+	product.price,
+	categories.find(category => category.id === product.category)
+)));
+console.group("Products:");
+	console.table(products);
+console.groupEnd("Products:");
 
 // ALL DATA
 const DATA = {
