@@ -3,9 +3,9 @@ const routerApi = require("./routes");
 const express = require("express");
 const app = express();
 const port = 3000;
-routerApi(app);
 app.use(express.json());
 app.listen(port, () => { console.log(`El servidor está corriendo en el puerto ${port}`); });
+routerApi(app);
 
 /* Pages */
 // Main Page

@@ -7,32 +7,52 @@ const router = express.Router();
 
 // GET Requests
 router.get("/", getUsers); // ./Users
-function getUsers(request, response) { response.json(DATA.users); }
+function getUsers(request, response) {
+	response.json(DATA.users);
+}
 
-router.get("/:userId", getUserById); // ./Users/{id}
+// ./Users/{id}
+router.get("/:userId", getUserById);
 function getUserById(request, response) {
 	const { userId } = request.params;
 	let userFound = helpers.searchInDataById(userId, DATA.users);
 	
 	if (!userFound) {
-		response.send("No se encontró la información solicitada");
+		response.json({message: "Error: No se encontró la información solicitada"});
 	} else {
 		response.json(userFound);
 	}
 }
 
 // POST Requests
-router.post("/", createUser);
-function createUser(request, response) { response.json(DATA.users); }
-/*
-function createProduct(request, response) {
-	const body = request.body;
-	response.json({
-		message: "created",
-		data: body
-	});
+router.post("/", createUser); // ./Users
+function createUser(request, response) {
+	const userSubmitted = request.body;
+	const validUser = helpers.validateUserForCreation(userSubmitted);
+	
+	if (!validUser) {
+		response.json({message: "Error: Usuario Inválido."});
+	} else {
+		response.json({massage: "El usuario se creó correctamente."});
+	}
 }
-*/
+
+// DELETE Requests
+router.delete("/:userId", deleteUser); // ./Users/{id}
+function deleteUser(request, response) {
+	const { userId } = request.params;
+	let userFound = helpers.searchInDataById(userId, DATA.users);
+	
+	if (!userFound) {
+		response.json({message: "Error: No se encontró al usuario especificado"});
+	} else {
+		response.json({massage: "El usuario se borró correctamente.", user: userFound});
+	}
+}
+
+// PATCH Requests
+
+// PUT Requests
 
 /* Export */
 module.exports = router;
