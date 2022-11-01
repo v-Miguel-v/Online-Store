@@ -15,7 +15,7 @@ function getCategories(request, response) {
 router.get("/:categoryId", getCategoryById);
 function getCategoryById(request, response) {
 	const { categoryId } = request.params;
-	let categoryFound = helpers.searchInDataById(categoryId, DATA.categories);
+	const categoryFound = helpers.searchInDataById(categoryId, DATA.categories);
 	
 	if (!categoryFound) {
 		response.json({message: "Error: No se encontró la información solicitada"});
@@ -28,7 +28,7 @@ function getCategoryById(request, response) {
 router.get("/:categoryId/products", getProductsByCategory);
 function getProductsByCategory(request, response) {
 	const { categoryId } = request.params;
-	let categoryFound = helpers.searchInDataById(categoryId, DATA.categories);
+	const categoryFound = helpers.searchInDataById(categoryId, DATA.categories);
 	
 	if (!categoryFound) {
 		response.json({message: "Error: No se encontró la información solicitada"});
@@ -41,7 +41,7 @@ function getProductsByCategory(request, response) {
 router.get("/:categoryId/products/:productId", getProductByIdFromCategory);
 function getProductByIdFromCategory(request, response) {
 	const { categoryId, productId } = request.params;
-	let categoryFound = helpers.searchInDataById(categoryId, DATA.categories);
+	const categoryFound = helpers.searchInDataById(categoryId, DATA.categories);
 	
 	if (!categoryFound) {
 		response.json({message: "Error: No se encontró la información solicitada"});
@@ -61,12 +61,12 @@ function getProductByIdFromCategory(request, response) {
 router.post("/", createCategory); // ./Categories
 function createCategory(request, response) {
 	const categorySubmitted = request.body;
-	const validCategory = helpers.validateCategoryForCreation(categorySubmitted);
+	const validCategory = helpers.validateCategoryInformation(categorySubmitted, "full validation");
 	
 	if (!validCategory) {
 		response.json({message: "Error: Categoría Inválida."});
 	} else {
-		response.json({massage: "La categoría se creó correctamente."});
+		response.json({massage: "La categoría se creó correctamente.", categoryCreated: categorySubmitted});
 	}
 }
 
@@ -74,18 +74,63 @@ function createCategory(request, response) {
 router.delete("/:categoryId", deleteCategory); // ./Categories/{categoryId}
 function deleteCategory(request, response) {
 	const { categoryId } = request.params;
-	let categoryFound = helpers.searchInDataById(categoryId, DATA.categories);
+	const categoryFound = helpers.searchInDataById(categoryId, DATA.categories);
 	
 	if (!categoryFound) {
 		response.json({message: "Error: No se encontró la categoría especificada."});
 	} else {
-		response.json({message: "La categoría se borró correctamente.", category: categoryFound});
+		response.json({message: "La categoría se borró correctamente.", categoryDeleted: categoryFound});
 	}
 }
 
 // PATCH Requests
+router.patch("/:categoryId", simpleUpdateCategory); // ./Categories/{id}
+function simpleUpdateCategory(request, response) {
+	const { categoryId } = request.params;
+	const categoryFound = helpers.searchInDataById(categoryId, DATA.categories);
+	
+	if (!categoryFound) {
+		response.json({message: "Error: No se encontró la categoría especificada"});
+	} else {
+		const updateInfo = request.body;
+		const validInfo = helpers.validateCategoryInformation(updateInfo, "simple validation");;
+		
+		if (validInfo) {
+			response.json({
+				massage: "La categoría se actualizó correctamente.",
+				categoryBefore: categoryFound,
+				categoryAfter: {...categoryFound, ...updateInfo}
+			});
+		} else {
+			response.json({message: "Error: Los datos proporcionados para la actualización son incorrectos."});
+		}
+	}
+}
 
 // PUT Requests
+router.put("/:categoryId", fullUpdateCategory); // ./Categories/{id}
+function fullUpdateCategory(request, response) {
+	const { categoryId } = request.params;
+	const categoryFound = helpers.searchInDataById(categoryId, DATA.categories);
+	
+	if (!categoryFound) {
+		response.json({message: "Error: No se encontró la categoría especificada"});
+	} else {
+		const updateInfo = request.body;
+		const validInfo = helpers.validateCategoryInformation(updateInfo, "full validation");
+		
+		if (validInfo) {
+			response.json({
+				massage: "La categoría se actualizó correctamente.",
+				categoryBefore: categoryFound,
+				categoryAfter: {...categoryFound, ...updateInfo}
+			});
+		} else {
+			response.json({message: "Error: Los datos proporcionados para la actualización son incorrectos."});
+		}
+	}
+}
+
 
 /* Export */
 module.exports = router;
