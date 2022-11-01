@@ -8,7 +8,7 @@ const router = express.Router();
 // GET Requests
 router.get("/", getProducts); // ./Products
 function getProducts(request, response) {
-	response.json(DATA.products);
+	response.status(200).json(DATA.products);
 }
 
 // ./Products/{productId}
@@ -18,9 +18,9 @@ function getProductById(request, response) {
 	const productFound = helpers.searchInDataById(productId, DATA.products);
 	
 	if (!productFound) {
-		response.json({message: "Error: No se encontró la información solicitada"});
+		response.status(404).json({message: "Error: No se encontró la información solicitada"});
 	} else {
-		response.json(productFound);
+		response.status(200).json(productFound);
 	}
 }
 
@@ -31,9 +31,9 @@ function createProduct(request, response) {
 	const validProduct = helpers.validateProductInformation(productSubmitted, "full validation");
 	
 	if (!validProduct) {
-		response.json({message: "Error: Producto Inválido."});
+		response.status(400).json({message: "Error: Producto Inválido."});
 	} else {
-		response.json({massage: "El producto se creó correctamente.", productCreated: productSubmitted});
+		response.status(201).json({massage: "El producto se creó correctamente.", productCreated: productSubmitted});
 	}
 }
 
@@ -44,9 +44,9 @@ function deleteProduct(request, response) {
 	const productFound = helpers.searchInDataById(productId, DATA.products);
 	
 	if (!productFound) {
-		response.json({message: "Error: No se encontró el producto especificado."});
+		response.status(404).json({message: "Error: No se encontró el producto especificado."});
 	} else {
-		response.json({message: "El producto se borró correctamente.", productDeleted: productFound});
+		response.status(200).json({message: "El producto se borró correctamente.", productDeleted: productFound});
 		// Probablemente aquí haya un error en la parte de la categoría.
 	}
 }
@@ -58,19 +58,19 @@ function simpleUpdateProduct(request, response) {
 	const productFound = helpers.searchInDataById(productId, DATA.products);
 	
 	if (!productFound) {
-		response.json({message: "Error: No se encontró el producto especificado"});
+		response.status(404).json({message: "Error: No se encontró el producto especificado"});
 	} else {
 		const updateInfo = request.body;
 		const validInfo = helpers.validateProductInformation(updateInfo, "simple validation");
 		
 		if (validInfo) {
-			response.json({
+			response.status(200).json({
 				massage: "El producto se actualizó correctamente.",
 				productBefore: productFound,
 				productAfter: {...productFound, ...updateInfo} // Probablemente aquí haya un error en la parte de la categoría.
 			});
 		} else {
-			response.json({message: "Error: Los datos proporcionados para la actualización son incorrectos."});
+			response.status(400).json({message: "Error: Los datos proporcionados para la actualización son incorrectos."});
 		}
 	}
 }
@@ -82,19 +82,19 @@ function fullUpdateProduct(request, response) {
 	const productFound = helpers.searchInDataById(productId, DATA.products);
 	
 	if (!productFound) {
-		response.json({message: "Error: No se encontró el producto especificado"});
+		response.status(404).json({message: "Error: No se encontró el producto especificado"});
 	} else {
 		const updateInfo = request.body;
 		const validInfo = helpers.validateProductInformation(updateInfo, "full validation");
 		
 		if (validInfo) {
-			response.json({
+			response.status(200).json({
 				massage: "El producto se actualizó correctamente.",
 				productBefore: productFound,
 				productAfter: {...productFound, ...updateInfo} // Probablemente aquí haya un error en la parte de la categoría.
 			});
 		} else {
-			response.json({message: "Error: Los datos proporcionados para la actualización son incorrectos."});
+			response.status(400).json({message: "Error: Los datos proporcionados para la actualización son incorrectos."});
 		}
 	}
 }

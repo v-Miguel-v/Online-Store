@@ -8,7 +8,7 @@ const router = express.Router();
 // GET Requests
 router.get("/", getCategories); // ./Categories
 function getCategories(request, response) {
-	response.json(DATA.categories);
+	response.status(200).json(DATA.categories);
 }
 
 // ./Categories/{categoryId}
@@ -18,9 +18,9 @@ function getCategoryById(request, response) {
 	const categoryFound = helpers.searchInDataById(categoryId, DATA.categories);
 	
 	if (!categoryFound) {
-		response.json({message: "Error: No se encontró la información solicitada"});
+		response.status(404).json({message: "Error: No se encontró la información solicitada"});
 	} else {
-		response.json(categoryFound);
+		response.status(200).json(categoryFound);
 	}
 }
 
@@ -31,9 +31,9 @@ function getProductsByCategory(request, response) {
 	const categoryFound = helpers.searchInDataById(categoryId, DATA.categories);
 	
 	if (!categoryFound) {
-		response.json({message: "Error: No se encontró la información solicitada"});
+		response.status(404).json({message: "Error: No se encontró la información solicitada"});
 	} else {
-		response.json(DATA.products.filter(product => product.category.id === categoryFound.id));
+		response.status(200).json(DATA.products.filter(product => product.category.id === categoryFound.id));
 	}
 }
 
@@ -44,15 +44,15 @@ function getProductByIdFromCategory(request, response) {
 	const categoryFound = helpers.searchInDataById(categoryId, DATA.categories);
 	
 	if (!categoryFound) {
-		response.json({message: "Error: No se encontró la información solicitada"});
+		response.status(404).json({message: "Error: No se encontró la información solicitada"});
 	} else {
 		const categoryProducts = DATA.products.filter(product => product.category.id === categoryFound.id);
 		let productFound = helpers.searchInDataById(productId, categoryProducts);
 		
 		if (productFound) {
-			response.json(productFound);
+			response.status(200).json(productFound);
 		} else {
-			response.json({message: "Error: No se encontró la información solicitada"});
+			response.status(404).json({message: "Error: No se encontró la información solicitada"});
 		}
 	}
 }
@@ -64,9 +64,9 @@ function createCategory(request, response) {
 	const validCategory = helpers.validateCategoryInformation(categorySubmitted, "full validation");
 	
 	if (!validCategory) {
-		response.json({message: "Error: Categoría Inválida."});
+		response.status(400).json({message: "Error: Categoría Inválida."});
 	} else {
-		response.json({massage: "La categoría se creó correctamente.", categoryCreated: categorySubmitted});
+		response.status(201).json({massage: "La categoría se creó correctamente.", categoryCreated: categorySubmitted});
 	}
 }
 
@@ -77,9 +77,9 @@ function deleteCategory(request, response) {
 	const categoryFound = helpers.searchInDataById(categoryId, DATA.categories);
 	
 	if (!categoryFound) {
-		response.json({message: "Error: No se encontró la categoría especificada."});
+		response.status(404).json({message: "Error: No se encontró la categoría especificada."});
 	} else {
-		response.json({message: "La categoría se borró correctamente.", categoryDeleted: categoryFound});
+		response.status(200).json({message: "La categoría se borró correctamente.", categoryDeleted: categoryFound});
 	}
 }
 
@@ -90,19 +90,19 @@ function simpleUpdateCategory(request, response) {
 	const categoryFound = helpers.searchInDataById(categoryId, DATA.categories);
 	
 	if (!categoryFound) {
-		response.json({message: "Error: No se encontró la categoría especificada"});
+		response.status(404).json({message: "Error: No se encontró la categoría especificada"});
 	} else {
 		const updateInfo = request.body;
 		const validInfo = helpers.validateCategoryInformation(updateInfo, "simple validation");;
 		
 		if (validInfo) {
-			response.json({
+			response.status(200).json({
 				massage: "La categoría se actualizó correctamente.",
 				categoryBefore: categoryFound,
 				categoryAfter: {...categoryFound, ...updateInfo}
 			});
 		} else {
-			response.json({message: "Error: Los datos proporcionados para la actualización son incorrectos."});
+			response.status(400).json({message: "Error: Los datos proporcionados para la actualización son incorrectos."});
 		}
 	}
 }
@@ -114,19 +114,19 @@ function fullUpdateCategory(request, response) {
 	const categoryFound = helpers.searchInDataById(categoryId, DATA.categories);
 	
 	if (!categoryFound) {
-		response.json({message: "Error: No se encontró la categoría especificada"});
+		response.status(404).json({message: "Error: No se encontró la categoría especificada"});
 	} else {
 		const updateInfo = request.body;
 		const validInfo = helpers.validateCategoryInformation(updateInfo, "full validation");
 		
 		if (validInfo) {
-			response.json({
+			response.status(200).json({
 				massage: "La categoría se actualizó correctamente.",
 				categoryBefore: categoryFound,
 				categoryAfter: {...categoryFound, ...updateInfo}
 			});
 		} else {
-			response.json({message: "Error: Los datos proporcionados para la actualización son incorrectos."});
+			response.status(400).json({message: "Error: Los datos proporcionados para la actualización son incorrectos."});
 		}
 	}
 }

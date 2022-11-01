@@ -8,7 +8,7 @@ const router = express.Router();
 // GET Requests
 router.get("/", getUsers); // ./Users
 function getUsers(request, response) {
-	response.json(DATA.users);
+	response.status(200).json(DATA.users);
 }
 
 // ./Users/{id}
@@ -18,9 +18,9 @@ function getUserById(request, response) {
 	const userFound = helpers.searchInDataById(userId, DATA.users);
 	
 	if (!userFound) {
-		response.json({message: "Error: No se encontró la información solicitada"});
+		response.status(404).json({message: "Error: No se encontró la información solicitada"});
 	} else {
-		response.json(userFound);
+		response.status(200).json(userFound);
 	}
 }
 
@@ -31,9 +31,9 @@ function createUser(request, response) {
 	const validUser = helpers.validateUserInformation(userSubmitted, "full validation");
 	
 	if (!validUser) {
-		response.json({message: "Error: Usuario Inválido."});
+		response.status(400).json({message: "Error: Usuario Inválido."});
 	} else {
-		response.json({massage: "El usuario se creó correctamente.", userCreated: userSubmitted});
+		response.status(201).json({massage: "El usuario se creó correctamente.", userCreated: userSubmitted});
 	}
 }
 
@@ -44,9 +44,9 @@ function deleteUser(request, response) {
 	const userFound = helpers.searchInDataById(userId, DATA.users);
 	
 	if (!userFound) {
-		response.json({message: "Error: No se encontró al usuario especificado"});
+		response.status(404).json({message: "Error: No se encontró al usuario especificado"});
 	} else {
-		response.json({massage: "El usuario se borró correctamente.", userDeleted: userFound});
+		response.status(200).json({massage: "El usuario se borró correctamente.", userDeleted: userFound});
 	}
 }
 
@@ -57,19 +57,19 @@ function simpleUpdateUser(request, response) {
 	const userFound = helpers.searchInDataById(userId, DATA.users);
 	
 	if (!userFound) {
-		response.json({message: "Error: No se encontró al usuario especificado"});
+		response.status(404).json({message: "Error: No se encontró al usuario especificado"});
 	} else {
 		const updateInfo = request.body;
 		const validInfo = helpers.validateUserInformation(updateInfo, "simple validation");
 		
 		if (validInfo) {
-			response.json({
+			response.status(200).json({
 				massage: "El usuario se actualizó correctamente.",
 				userBefore: userFound,
 				userAfter: {...userFound, ...updateInfo}
 			});
 		} else {
-			response.json({message: "Error: Los datos proporcionados para la actualización son incorrectos."});
+			response.status(400).json({message: "Error: Los datos proporcionados para la actualización son incorrectos."});
 		}
 	}
 }
@@ -81,19 +81,19 @@ function fullUpdateUser(request, response) {
 	const userFound = helpers.searchInDataById(userId, DATA.users);
 	
 	if (!userFound) {
-		response.json({message: "Error: No se encontró al usuario especificado"});
+		response.status(404).json({message: "Error: No se encontró al usuario especificado"});
 	} else {
 		const updateInfo = request.body;
 		const validInfo = helpers.validateUserInformation(updateInfo, "full validation");
 		
 		if (validInfo) {
-			response.json({
+			response.status(200).json({
 				massage: "El usuario se actualizó correctamente.",
 				userBefore: userFound,
 				userAfter: {...userFound, ...updateInfo}
 			});
 		} else {
-			response.json({message: "Error: Los datos proporcionados para la actualización son incorrectos."});
+			response.status(400).json({message: "Error: Los datos proporcionados para la actualización son incorrectos."});
 		}
 	}
 }
