@@ -1,24 +1,27 @@
-const DATA = require("../../data");
-const helpers = require("../../helpers");
-const express = require("express");
-const router = express.Router();
+/* Instances Initialization */
+const CategoriesService = require("../../services/categories.service");
+const ProductsService = require("../../services/products.service");
+	const service = new CategoriesService();
+	const products = new ProductsService();
 
-/* HTTP Requests */
+const express = require("express");
+	const router = express.Router();
 
 // GET Requests
 router.get("/", getCategories); // ./Categories
 function getCategories(request, response) {
-	response.status(200).json(DATA.categories);
+	const allCategories = service.getAll();
+	response.json(allCategories);
 }
 
 // ./Categories/{categoryId}
 router.get("/:categoryId", getCategoryById);
 function getCategoryById(request, response) {
 	const { categoryId } = request.params;
-	const categoryFound = helpers.searchInDataById(categoryId, DATA.categories);
+	const categoryFound = service.search(categoryId);
 	
 	if (!categoryFound) {
-		response.status(404).json({message: "Error: No se encontró la información solicitada"});
+		response.status(404).json({message: "Error: No se encontró la información solicitada."});
 	} else {
 		response.status(200).json(categoryFound);
 	}
@@ -28,12 +31,13 @@ function getCategoryById(request, response) {
 router.get("/:categoryId/products", getProductsByCategory);
 function getProductsByCategory(request, response) {
 	const { categoryId } = request.params;
-	const categoryFound = helpers.searchInDataById(categoryId, DATA.categories);
+	const categoryFound = service.search(categoryId);
 	
 	if (!categoryFound) {
-		response.status(404).json({message: "Error: No se encontró la información solicitada"});
+		response.status(404).json({message: "Error: No se encontró la información solicitada."});
 	} else {
-		response.status(200).json(DATA.products.filter(product => product.category.id === categoryFound.id));
+		const allProducts = products.getAll();
+		response.status(200).json(allProducts.filter(product => product.category.id === categoryId));
 	}
 }
 
@@ -41,18 +45,19 @@ function getProductsByCategory(request, response) {
 router.get("/:categoryId/products/:productId", getProductByIdFromCategory);
 function getProductByIdFromCategory(request, response) {
 	const { categoryId, productId } = request.params;
-	const categoryFound = helpers.searchInDataById(categoryId, DATA.categories);
+	const categoryFound = service.search(categoryId);
 	
 	if (!categoryFound) {
-		response.status(404).json({message: "Error: No se encontró la información solicitada"});
+		response.status(404).json({message: "Error: No se encontró la información solicitada."});
 	} else {
-		const categoryProducts = DATA.products.filter(product => product.category.id === categoryFound.id);
-		let productFound = helpers.searchInDataById(productId, categoryProducts);
+		const AllProducts = products.getAll();
+		const categoryProducts = AllProducts.filter(product => product.category.id === categoryId);
+		const productFound = categoryProducts.find(product => product.id === productId);
 		
 		if (productFound) {
 			response.status(200).json(productFound);
 		} else {
-			response.status(404).json({message: "Error: No se encontró la información solicitada"});
+			response.status(404).json({message: "Error: No se encontró la información solicitada."});
 		}
 	}
 }
@@ -60,13 +65,14 @@ function getProductByIdFromCategory(request, response) {
 // POST Requests
 router.post("/", createCategory); // ./Categories
 function createCategory(request, response) {
-	const categorySubmitted = request.body;
-	const validCategory = helpers.validateCategoryInformation(categorySubmitted, "full validation");
+	const givenCategory = request.body;
+	const validCategory = service.validate(givenCategory, "full validation");
 	
 	if (!validCategory) {
 		response.status(400).json({message: "Error: Categoría Inválida."});
 	} else {
-		response.status(201).json({massage: "La categoría se creó correctamente.", categoryCreated: categorySubmitted});
+		// const newCategory = service.create(givenCategory);
+		response.status(201).json({massage: "La categoría se creó correctamente.", categoryCreated: givenCategory});
 	}
 }
 
@@ -74,11 +80,12 @@ function createCategory(request, response) {
 router.delete("/:categoryId", deleteCategory); // ./Categories/{categoryId}
 function deleteCategory(request, response) {
 	const { categoryId } = request.params;
-	const categoryFound = helpers.searchInDataById(categoryId, DATA.categories);
+	const categoryFound = service.search(categoryId);
 	
 	if (!categoryFound) {
 		response.status(404).json({message: "Error: No se encontró la categoría especificada."});
 	} else {
+		// service.delete(categoryId);
 		response.status(200).json({message: "La categoría se borró correctamente.", categoryDeleted: categoryFound});
 	}
 }
@@ -87,15 +94,16 @@ function deleteCategory(request, response) {
 router.patch("/:categoryId", simpleUpdateCategory); // ./Categories/{id}
 function simpleUpdateCategory(request, response) {
 	const { categoryId } = request.params;
-	const categoryFound = helpers.searchInDataById(categoryId, DATA.categories);
+	const categoryFound = service.search(categoryId);
 	
 	if (!categoryFound) {
-		response.status(404).json({message: "Error: No se encontró la categoría especificada"});
+		response.status(404).json({message: "Error: No se encontró la categoría especificada."});
 	} else {
 		const updateInfo = request.body;
-		const validInfo = helpers.validateCategoryInformation(updateInfo, "simple validation");;
+		const validInfo = service.validate(updateInfo, "simple validation");;
 		
 		if (validInfo) {
+			// service.simpleUpdate(categoryId, updateInfo);
 			response.status(200).json({
 				massage: "La categoría se actualizó correctamente.",
 				categoryBefore: categoryFound,
@@ -111,15 +119,16 @@ function simpleUpdateCategory(request, response) {
 router.put("/:categoryId", fullUpdateCategory); // ./Categories/{id}
 function fullUpdateCategory(request, response) {
 	const { categoryId } = request.params;
-	const categoryFound = helpers.searchInDataById(categoryId, DATA.categories);
+	const categoryFound = service.search(categoryId);
 	
 	if (!categoryFound) {
-		response.status(404).json({message: "Error: No se encontró la categoría especificada"});
+		response.status(404).json({message: "Error: No se encontró la categoría especificada."});
 	} else {
 		const updateInfo = request.body;
-		const validInfo = helpers.validateCategoryInformation(updateInfo, "full validation");
+		const validInfo = service.validate(updateInfo, "full validation");
 		
 		if (validInfo) {
+			// service.fullUpdate(categoryId, updateInfo);
 			response.status(200).json({
 				massage: "La categoría se actualizó correctamente.",
 				categoryBefore: categoryFound,
@@ -130,7 +139,6 @@ function fullUpdateCategory(request, response) {
 		}
 	}
 }
-
 
 /* Export */
 module.exports = router;

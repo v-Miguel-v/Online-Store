@@ -1,21 +1,21 @@
-{"id": 0, "name": "T-Shirt", "price": 205, "category": 0}
-{"id": 1, "name": "Jeans", "price": 210, "category": 0}
-{"id": 2, "name": "Cool Shoes", "price": 800, "category": 0}
-{"id": 3, "name": "Hat", "price": 70, "category": 0}
-{"id": 4, "name": "Soccer Ball", "price": 510, "category": 1}
-{"id": 5, "name": "Tennis Racquet", "price": 130, "category": 1}
-{"id": 6, "name": "Boxing Gloves", "price": 650, "category": 1}
-{"id": 7, "name": "Bicycle", "price": 1800, "category": 1}
-{"id": 8, "name": "Disinfectant", "price": 150, "category": 2}
-{"id": 9, "name": "Chlorine", "price": 120, "category": 2}
-{"id": 10, "name": "Soap", "price": 15, "category": 2}
-{"id": 11, "name": "Sponge", "price": 8, "category": 2}
-{"id": 12, "name": "Microwave", "price": 1000, "category": 3}
-{"id": 13, "name": "Refrigerator", "price": 2990, "category": 3}
-{"id": 14, "name": "Toaster", "price": 770, "category": 3}
-{"id": 15, "name": "Washing Machine", "price": 2500, "category": 3}
-{"id": 16, "name": "Sofa", "price": 890, "category": 4}
-{"id": 17, "name": "Bed", "price": 900, "category": 4}
-{"id": 18, "name": "Table", "price": 500, "category": 4}
-{"id": 19, "name": "Chair", "price": 130, "category": 4}
-{"id": 20, "name": "¡DIO!", "price": 710, "category": 5}
+{"id": "0", "name": "T-Shirt", "price": 205, "category": "0"}
+{"id": "1", "name": "Jeans", "price": 210, "category": "0"}
+{"id": "2", "name": "Cool Shoes", "price": 800, "category": "0"}
+{"id": "3", "name": "Hat", "price": 70, "category": "0"}
+{"id": "4", "name": "Soccer Ball", "price": 510, "category": "1"}
+{"id": "5", "name": "Tennis Racquet", "price": 130, "category": "1"}
+{"id": "6", "name": "Boxing Gloves", "price": 650, "category": "1"}
+{"id": "7", "name": "Bicycle", "price": 1800, "category": "1"}
+{"id": "8", "name": "Disinfectant", "price": 150, "category": "2"}
+{"id": "9", "name": "Chlorine", "price": 120, "category": "2"}
+{"id": "10", "name": "Soap", "price": 15, "category": "2"}
+{"id": "11", "name": "Sponge", "price": 8, "category": "2"}
+{"id": "12", "name": "Microwave", "price": 1000, "category": "3"}
+{"id": "13", "name": "Refrigerator", "price": 2990, "category": "3"}
+{"id": "14", "name": "Toaster", "price": 770, "category": "3"}
+{"id": "15", "name": "Washing Machine", "price": 2500, "category": "3"}
+{"id": "16", "name": "Sofa", "price": 890, "category": "4"}
+{"id": "17", "name": "Bed", "price": 900, "category": "4"}
+{"id": "18", "name": "Table", "price": 500, "category": "4"}
+{"id": "19", "name": "Chair", "price": 130, "category": "4"}
+{"id": "20", "name": "¡DIO!", "price": 710, "category": "5"}

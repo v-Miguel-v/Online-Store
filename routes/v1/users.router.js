@@ -1,24 +1,25 @@
-const DATA = require("../../data");
-const helpers = require("../../helpers");
-const express = require("express");
-const router = express.Router();
+/* Instances Initialization */
+const UsersService = require("../../services/users.service");
+	const service = new UsersService();
 
-/* HTTP Requests */
+const express = require("express");
+	const router = express.Router();
 
 // GET Requests
 router.get("/", getUsers); // ./Users
 function getUsers(request, response) {
-	response.status(200).json(DATA.users);
+	const allUsers = service.getAll();
+	response.json(allUsers);
 }
 
 // ./Users/{id}
 router.get("/:userId", getUserById);
 function getUserById(request, response) {
 	const { userId } = request.params;
-	const userFound = helpers.searchInDataById(userId, DATA.users);
+	const userFound = service.search(userId);
 	
 	if (!userFound) {
-		response.status(404).json({message: "Error: No se encontró la información solicitada"});
+		response.status(404).json({message: "Error: No se encontró la información solicitada."});
 	} else {
 		response.status(200).json(userFound);
 	}
@@ -27,13 +28,14 @@ function getUserById(request, response) {
 // POST Requests
 router.post("/", createUser); // ./Users
 function createUser(request, response) {
-	const userSubmitted = request.body;
-	const validUser = helpers.validateUserInformation(userSubmitted, "full validation");
+	const givenUser = request.body;
+	const validUser = service.validate(givenUser, "full validation");
 	
 	if (!validUser) {
 		response.status(400).json({message: "Error: Usuario Inválido."});
 	} else {
-		response.status(201).json({massage: "El usuario se creó correctamente.", userCreated: userSubmitted});
+		// const newUser = service.create(givenUser);
+		response.status(201).json({massage: "El usuario se creó correctamente.", userCreated: givenUser});
 	}
 }
 
@@ -41,11 +43,12 @@ function createUser(request, response) {
 router.delete("/:userId", deleteUser); // ./Users/{id}
 function deleteUser(request, response) {
 	const { userId } = request.params;
-	const userFound = helpers.searchInDataById(userId, DATA.users);
+	const userFound = service.search(userId);
 	
 	if (!userFound) {
-		response.status(404).json({message: "Error: No se encontró al usuario especificado"});
+		response.status(404).json({message: "Error: No se encontró al usuario especificado."});
 	} else {
+		// service.delete(userId);
 		response.status(200).json({massage: "El usuario se borró correctamente.", userDeleted: userFound});
 	}
 }
@@ -54,15 +57,16 @@ function deleteUser(request, response) {
 router.patch("/:userId", simpleUpdateUser); // ./Users/{id}
 function simpleUpdateUser(request, response) {
 	const { userId } = request.params;
-	const userFound = helpers.searchInDataById(userId, DATA.users);
+	const userFound = service.search(userId);
 	
 	if (!userFound) {
-		response.status(404).json({message: "Error: No se encontró al usuario especificado"});
+		response.status(404).json({message: "Error: No se encontró al usuario especificado."});
 	} else {
 		const updateInfo = request.body;
-		const validInfo = helpers.validateUserInformation(updateInfo, "simple validation");
+		const validInfo = service.validate(updateInfo, "simple validation");
 		
 		if (validInfo) {
+			// service.simpleUpdate(userId, updateInfo);
 			response.status(200).json({
 				massage: "El usuario se actualizó correctamente.",
 				userBefore: userFound,
@@ -78,15 +82,16 @@ function simpleUpdateUser(request, response) {
 router.put("/:userId", fullUpdateUser); // ./Users/{id}
 function fullUpdateUser(request, response) {
 	const { userId } = request.params;
-	const userFound = helpers.searchInDataById(userId, DATA.users);
+	const userFound = service.search(userId);
 	
 	if (!userFound) {
-		response.status(404).json({message: "Error: No se encontró al usuario especificado"});
+		response.status(404).json({message: "Error: No se encontró al usuario especificado."});
 	} else {
 		const updateInfo = request.body;
-		const validInfo = helpers.validateUserInformation(updateInfo, "full validation");
+		const validInfo = service.validate(updateInfo, "full validation");
 		
 		if (validInfo) {
+			// service.fullUpdate(userId, updateInfo);
 			response.status(200).json({
 				massage: "El usuario se actualizó correctamente.",
 				userBefore: userFound,
