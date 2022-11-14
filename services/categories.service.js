@@ -56,19 +56,29 @@ class CategoriesService {
 	}
 	
 	create(givenCategory){
-		// próximamente
+		const lastIndex = this.categories.length - 1;
+		const lastId = Number(this.categories[lastIndex].id);
+		const newId = String(lastId+1);
+		const newCategory = {id: newId, ...givenCategory};
+		this.categories.push(newCategory);
+		return newCategory;
 	}
 	
 	delete(givenId){
-		// próximamente
+		const index = this.categories.findIndex(category => category.id === givenId);
+		this.categories.splice(index, 1);
 	}
 	
-	simpleUpdate(givenCategory){
-		// próximamente
+	simpleUpdate(givenId, givenUpdate){
+		const category = this.categories.find(category => category.id === givenId);
+		const index = this.categories.findIndex(category => category.id === givenId);
+		this.categories[index] = { ...category, ...givenUpdate };
 	}
 	
-	fullUpdate(givenCategory){
-		// próximamente
+	fullUpdate(givenId, givenUpdate){
+		const category = this.categories.find(category => category.id === givenId);
+		const index = this.categories.findIndex(category => category.id === givenId);
+		this.categories[index] = { ...category, ...givenUpdate };
 	}
 }
 

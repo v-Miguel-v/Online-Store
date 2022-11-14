@@ -34,8 +34,8 @@ function createUser(request, response) {
 	if (!validUser) {
 		response.status(400).json({message: "Error: Usuario Inválido."});
 	} else {
-		// const newUser = service.create(givenUser);
-		response.status(201).json({massage: "El usuario se creó correctamente.", userCreated: givenUser});
+		const newUser = service.create(givenUser);
+		response.status(201).json({massage: "El usuario se creó correctamente.", userCreated: newUser});
 	}
 }
 
@@ -48,7 +48,7 @@ function deleteUser(request, response) {
 	if (!userFound) {
 		response.status(404).json({message: "Error: No se encontró al usuario especificado."});
 	} else {
-		// service.delete(userId);
+		service.delete(userId);
 		response.status(200).json({massage: "El usuario se borró correctamente.", userDeleted: userFound});
 	}
 }
@@ -66,7 +66,7 @@ function simpleUpdateUser(request, response) {
 		const validInfo = service.validate(updateInfo, "simple validation");
 		
 		if (validInfo) {
-			// service.simpleUpdate(userId, updateInfo);
+			service.simpleUpdate(userId, updateInfo);
 			response.status(200).json({
 				massage: "El usuario se actualizó correctamente.",
 				userBefore: userFound,
@@ -91,7 +91,7 @@ function fullUpdateUser(request, response) {
 		const validInfo = service.validate(updateInfo, "full validation");
 		
 		if (validInfo) {
-			// service.fullUpdate(userId, updateInfo);
+			service.fullUpdate(userId, updateInfo);
 			response.status(200).json({
 				massage: "El usuario se actualizó correctamente.",
 				userBefore: userFound,

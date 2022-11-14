@@ -68,19 +68,29 @@ class ProductsService {
 	}
 	
 	create(givenProduct){
-		// próximamente
+		const lastIndex = this.products.length - 1;
+		const lastId = Number(this.products[lastIndex].id);
+		const newId = String(lastId+1);
+		const newProduct = {id: newId, ...givenProduct};
+		this.products.push(newProduct);
+		return newProduct;
 	}
 	
 	delete(givenId){
-		// próximamente
+		const index = this.products.findIndex(product => product.id === givenId);
+		this.products.splice(index, 1);
 	}
 	
-	simpleUpdate(givenProduct){
-		// próximamente
+	simpleUpdate(givenId, givenUpdate){
+		const product = this.products.find(product => product.id === givenId);
+		const index = this.products.findIndex(product => product.id === givenId);
+		this.products[index] = { ...product, ...givenUpdate };
 	}
 	
-	fullUpdate(givenProduct){
-		// próximamente
+	fullUpdate(givenId, givenUpdate){
+		const product = this.products.find(product => product.id === givenId);
+		const index = this.products.findIndex(product => product.id === givenId);
+		this.products[index] = { ...product, ...givenUpdate };
 	}
 }
 

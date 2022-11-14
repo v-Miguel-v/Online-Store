@@ -61,19 +61,29 @@ class UsersService {
 	}
 	
 	create(givenUser){
-		// próximamente
+		const lastIndex = this.users.length - 1;
+		const lastId = Number(this.users[lastIndex].id);
+		const newId = String(lastId+1);
+		const newUser = {id: newId, ...givenUser};
+		this.users.push(newUser);
+		return newUser;
 	}
 	
 	delete(givenId){
-		// próximamente
+		const index = this.users.findIndex(user => user.id === givenId);
+		this.users.splice(index, 1);
 	}
 	
-	simpleUpdate(givenUser){
-		// próximamente
+	simpleUpdate(givenId, givenUpdate){
+		const user = this.users.find(user => user.id === givenId);
+		const index = this.users.findIndex(user => user.id === givenId);
+		this.users[index] = { ...user, ...givenUpdate };
 	}
 	
-	fullUpdate(givenUser){
-		// próximamente
+	fullUpdate(givenId, givenUpdate){
+		const user = this.users.find(user => user.id === givenId);
+		const index = this.users.findIndex(user => user.id === givenId);
+		this.users[index] = { ...user, ...givenUpdate };
 	}
 }
 

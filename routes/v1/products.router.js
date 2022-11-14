@@ -34,8 +34,8 @@ function createProduct(request, response) {
 	if (!validProduct) {
 		response.status(400).json({message: "Error: Producto Inválido."});
 	} else {
-		// const newProduct = service.create(givenProduct);
-		response.status(201).json({massage: "El producto se creó correctamente.", productCreated: givenProduct});
+		const newProduct = service.create(givenProduct);
+		response.status(201).json({massage: "El producto se creó correctamente.", productCreated: newProduct});
 	}
 }
 
@@ -48,7 +48,7 @@ function deleteProduct(request, response) {
 	if (!productFound) {
 		response.status(404).json({message: "Error: No se encontró el producto especificado."});
 	} else {
-		// service.delete(productId);
+		service.delete(productId);
 		response.status(200).json({message: "El producto se borró correctamente.", productDeleted: productFound});
 		// Probablemente aquí haya un error en la parte de la categoría.
 	}
@@ -67,7 +67,7 @@ function simpleUpdateProduct(request, response) {
 		const validInfo = service.validate(updateInfo, "simple validation");
 		
 		if (validInfo) {
-			// service.simpleUpdate(productId, updateInfo);
+			service.simpleUpdate(productId, updateInfo);
 			response.status(200).json({
 				massage: "El producto se actualizó correctamente.",
 				productBefore: productFound,
@@ -92,7 +92,7 @@ function fullUpdateProduct(request, response) {
 		const validInfo = service.validate(updateInfo, "full validation");
 		
 		if (validInfo) {
-			// service.fullUpdate(productId, updateInfo);
+			service.fullUpdate(productId, updateInfo);
 			response.status(200).json({
 				massage: "El producto se actualizó correctamente.",
 				productBefore: productFound,
@@ -103,7 +103,6 @@ function fullUpdateProduct(request, response) {
 		}
 	}
 }
-
 
 /* Export */
 module.exports = router;

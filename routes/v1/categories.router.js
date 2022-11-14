@@ -71,8 +71,8 @@ function createCategory(request, response) {
 	if (!validCategory) {
 		response.status(400).json({message: "Error: Categoría Inválida."});
 	} else {
-		// const newCategory = service.create(givenCategory);
-		response.status(201).json({massage: "La categoría se creó correctamente.", categoryCreated: givenCategory});
+		const newCategory = service.create(givenCategory);
+		response.status(201).json({massage: "La categoría se creó correctamente.", categoryCreated: newCategory});
 	}
 }
 
@@ -85,7 +85,7 @@ function deleteCategory(request, response) {
 	if (!categoryFound) {
 		response.status(404).json({message: "Error: No se encontró la categoría especificada."});
 	} else {
-		// service.delete(categoryId);
+		service.delete(categoryId);
 		response.status(200).json({message: "La categoría se borró correctamente.", categoryDeleted: categoryFound});
 	}
 }
@@ -103,7 +103,7 @@ function simpleUpdateCategory(request, response) {
 		const validInfo = service.validate(updateInfo, "simple validation");;
 		
 		if (validInfo) {
-			// service.simpleUpdate(categoryId, updateInfo);
+			service.simpleUpdate(categoryId, updateInfo);
 			response.status(200).json({
 				massage: "La categoría se actualizó correctamente.",
 				categoryBefore: categoryFound,
@@ -128,7 +128,7 @@ function fullUpdateCategory(request, response) {
 		const validInfo = service.validate(updateInfo, "full validation");
 		
 		if (validInfo) {
-			// service.fullUpdate(categoryId, updateInfo);
+			service.fullUpdate(categoryId, updateInfo);
 			response.status(200).json({
 				massage: "La categoría se actualizó correctamente.",
 				categoryBefore: categoryFound,
