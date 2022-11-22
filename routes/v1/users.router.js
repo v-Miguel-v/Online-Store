@@ -7,99 +7,84 @@ const express = require("express");
 
 // GET Requests
 router.get("/", getUsers); // ./Users
-function getUsers(request, response) {
-	const allUsers = service.getAll();
-	response.json(allUsers);
+async function getUsers(request, response, errorHandlers) {
+	try {
+		const allUsers = await service.getAll();
+		response.status(200).json(allUsers);
+	} catch (error) {
+		errorHandlers(error);
+	}
 }
 
 // ./Users/{id}
 router.get("/:userId", getUserById);
-function getUserById(request, response) {
-	const { userId } = request.params;
-	const userFound = service.search(userId);
-	
-	if (!userFound) {
-		response.status(404).json({message: "Error: No se encontró la información solicitada."});
-	} else {
+async function getUserById(request, response, errorHandlers) {
+	try {
+		const { userId } = request.params;
+		const userFound = await service.search(userId);
 		response.status(200).json(userFound);
+	} catch (error) {
+		errorHandlers(error);
 	}
 }
 
 // POST Requests
 router.post("/", createUser); // ./Users
-function createUser(request, response) {
-	const givenUser = request.body;
-	const validUser = service.validate(givenUser, "full validation");
-	
-	if (!validUser) {
-		response.status(400).json({message: "Error: Usuario Inválido."});
-	} else {
-		const newUser = service.create(givenUser);
+async function createUser(request, response, errorHandlers) {
+	try {
+		const givenUser = request.body;
+		const newUser = await service.create(givenUser);
 		response.status(201).json({massage: "El usuario se creó correctamente.", userCreated: newUser});
+	} catch (error) {
+		errorHandlers(error);
 	}
 }
 
 // DELETE Requests
 router.delete("/:userId", deleteUser); // ./Users/{id}
-function deleteUser(request, response) {
-	const { userId } = request.params;
-	const userFound = service.search(userId);
-	
-	if (!userFound) {
-		response.status(404).json({message: "Error: No se encontró al usuario especificado."});
-	} else {
-		service.delete(userId);
-		response.status(200).json({massage: "El usuario se borró correctamente.", userDeleted: userFound});
+async function deleteUser(request, response, errorHandlers) {
+	try {
+		const { userId } = request.params;
+		const userDeleted = await service.delete(userId);
+		response.status(200).json({massage: "El usuario se borró correctamente.", userDeleted});
+	} catch (error) {
+		errorHandlers(error);
 	}
 }
 
 // PATCH Requests
 router.patch("/:userId", simpleUpdateUser); // ./Users/{id}
-function simpleUpdateUser(request, response) {
-	const { userId } = request.params;
-	const userFound = service.search(userId);
-	
-	if (!userFound) {
-		response.status(404).json({message: "Error: No se encontró al usuario especificado."});
-	} else {
+async function simpleUpdateUser(request, response, errorHandlers) {
+	try {
+		const { userId } = request.params;
 		const updateInfo = request.body;
-		const validInfo = service.validate(updateInfo, "simple validation");
-		
-		if (validInfo) {
-			service.simpleUpdate(userId, updateInfo);
-			response.status(200).json({
-				massage: "El usuario se actualizó correctamente.",
-				userBefore: userFound,
-				userAfter: {...userFound, ...updateInfo}
-			});
-		} else {
-			response.status(400).json({message: "Error: Los datos proporcionados para la actualización son incorrectos."});
-		}
+		const originalUser = await service.search(userId);
+		const userUpdated = await service.update(userId, updateInfo, "simple update");
+		response.status(200).json({
+			massage: "El usuario se actualizó correctamente.",
+			userBefore: originalUser,
+			userAfter: userUpdated
+		});
+	} catch (error) {
+		errorHandlers(error);
 	}
 }
 
 // PUT Requests
 router.put("/:userId", fullUpdateUser); // ./Users/{id}
-function fullUpdateUser(request, response) {
-	const { userId } = request.params;
-	const userFound = service.search(userId);
-	
-	if (!userFound) {
-		response.status(404).json({message: "Error: No se encontró al usuario especificado."});
-	} else {
+async function fullUpdateUser(request, response, errorHandlers) {
+	try {
+		const { userId } = request.params;
 		const updateInfo = request.body;
-		const validInfo = service.validate(updateInfo, "full validation");
-		
-		if (validInfo) {
-			service.fullUpdate(userId, updateInfo);
-			response.status(200).json({
-				massage: "El usuario se actualizó correctamente.",
-				userBefore: userFound,
-				userAfter: {...userFound, ...updateInfo}
-			});
-		} else {
-			response.status(400).json({message: "Error: Los datos proporcionados para la actualización son incorrectos."});
-		}
+		const originalUser = await service.search(userId);
+		const userUpdated = await service.update(userId, updateInfo, "full update");
+		response.status(200).json({
+			massage: "El usuario se actualizó correctamente.",
+			userBefore: originalUser,
+			userAfter: userUpdated
+		});
+	} catch (error) {
+		errorHandlers(error);
 	}
 }
 

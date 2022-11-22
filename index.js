@@ -1,4 +1,5 @@
 /* Initial & Global Values */
+const { logErrors, boomErrorHandler, serverErrorHandler } = require("./middlewares/errorhandlers.middleware");
 const routerApi = require("./routes");
 const express = require("express");
 const app = express();
@@ -6,6 +7,9 @@ const port = 3000;
 app.use(express.json());
 app.listen(port, () => { console.log(`El servidor está corriendo en el puerto ${port}`); });
 routerApi(app);
+app.use(logErrors);
+app.use(boomErrorHandler);
+app.use(serverErrorHandler);
 
 /* Pages */
 // Main Page
