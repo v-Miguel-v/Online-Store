@@ -1,11 +1,12 @@
 /* Instances Initialization */
 const CategoriesService = require("../../services/categories.service");
-const ProductsService = require("../../services/products.service");
 	const service = new CategoriesService();
-	const products = new ProductsService();
 
 const express = require("express");
 	const router = express.Router();
+	
+const validationHandler = require("../../middlewares/validation.handler");
+	const { fullValidationSchema, simpleValidationSchema, idValidationSchema, twoIdsValidationSchema } = require("../../schemas/categories.schema");
 
 // GET Requests
 router.get("/", getCategories); // ./Categories
@@ -18,24 +19,24 @@ async function getCategories(request, response, errorHandlers) {
 	}
 }
 
-// ./Categories/{categoryId}
-router.get("/:categoryId", getCategoryById);
+// ./Categories/{id}
+router.get("/:id", validationHandler(idValidationSchema, "params"), getCategoryById);
 async function getCategoryById(request, response, errorHandlers) {
 	try {
-		const { categoryId } = request.params;
-		const categoryFound = await service.search(categoryId);
+		const { id } = request.params;
+		const categoryFound = await service.search(id);
 		response.status(200).json(categoryFound);
 	} catch (error) {
 		errorHandlers(error);
 	}
 }
 
-// ./Categories/{categoryId}/products
-router.get("/:categoryId/products", getProductsByCategory);
+// ./Categories/{id}/products
+router.get("/:id/products", validationHandler(idValidationSchema, "params"), getProductsByCategory);
 async function getProductsByCategory(request, response, errorHandlers) {
 	try {
-		const { categoryId } = request.params;
-		const categoryProducts = await service.getProducts(categoryId);
+		const { id } = request.params;
+		const categoryProducts = await service.getProducts(id);
 		response.status(200).json(categoryProducts);
 	} catch (error) {
 		errorHandlers(error);
@@ -43,7 +44,7 @@ async function getProductsByCategory(request, response, errorHandlers) {
 }
 
 // ./Categories/{categoryId}/products/{productId}
-router.get("/:categoryId/products/:productId", getProductByIdFromCategory);
+router.get("/:categoryId/products/:productId", validationHandler(twoIdsValidationSchema, "params"), getProductByIdFromCategory);
 async function getProductByIdFromCategory(request, response, errorHandlers) {
 	try {
 		const { categoryId, productId } = request.params;
@@ -55,7 +56,7 @@ async function getProductByIdFromCategory(request, response, errorHandlers) {
 }
 
 // POST Requests
-router.post("/", createCategory); // ./Categories
+router.post("/", validationHandler(fullValidationSchema, "body"), createCategory); // ./Categories
 async function createCategory(request, response, errorHandlers) {
 	try {
 		const givenCategory = request.body;
@@ -67,11 +68,11 @@ async function createCategory(request, response, errorHandlers) {
 }
 
 // DELETE Requests
-router.delete("/:categoryId", deleteCategory); // ./Categories/{categoryId}
+router.delete("/:id", validationHandler(idValidationSchema, "params"), deleteCategory); // ./Categories/{id}
 async function deleteCategory(request, response, errorHandlers) {
 	try {
-		const { categoryId } = request.params;
-		const categoryDeleted = await service.delete(categoryId);
+		const { id } = request.params;
+		const categoryDeleted = await service.delete(id);
 		response.status(200).json({message: "La categoría se borró correctamente.", categoryDeleted});
 	} catch (error) {
 		errorHandlers(error);
@@ -79,13 +80,16 @@ async function deleteCategory(request, response, errorHandlers) {
 }
 
 // PATCH Requests
-router.patch("/:categoryId", simpleUpdateCategory); // ./Categories/{id}
+router.patch("/:id",
+	validationHandler(idValidationSchema, "params"),
+	validationHandler(simpleValidationSchema, "body"),
+simpleUpdateCategory); // ./Categories/{id}
 async function simpleUpdateCategory(request, response, errorHandlers) {
 	try {
-		const { categoryId } = request.params;
+		const { id } = request.params;
 		const updateInfo = request.body;
-		const originalCategory = await service.search(categoryId);
-		const categoryUpdated = await service.update(categoryId, updateInfo, "simple update");
+		const originalCategory = await service.search(id);
+		const categoryUpdated = await service.update(id, updateInfo, "simple update");
 		response.status(200).json({
 			massage: "La categoría se actualizó correctamente.",
 			categoryBefore: originalCategory,
@@ -97,13 +101,16 @@ async function simpleUpdateCategory(request, response, errorHandlers) {
 }
 
 // PUT Requests
-router.put("/:categoryId", fullUpdateCategory); // ./Categories/{id}
+router.put("/:id",
+	validationHandler(idValidationSchema, "params"),
+	validationHandler(fullValidationSchema, "body"),
+fullUpdateCategory); // ./Categories/{id}
 async function fullUpdateCategory(request, response, errorHandlers) {
 	try {
-		const { categoryId } = request.params;
+		const { id } = request.params;
 		const updateInfo = request.body;
-		const originalCategory = await service.search(categoryId);
-		const categoryUpdated = await service.update(categoryId, updateInfo, "full update");
+		const originalCategory = await service.search(id);
+		const categoryUpdated = await service.update(id, updateInfo, "full update");
 		response.status(200).json({
 			massage: "La categoría se actualizó correctamente.",
 			categoryBefore: originalCategory,

@@ -5,6 +5,9 @@ const ProductsService = require("../../services/products.service");
 const express = require("express");
 	const router = express.Router();
 
+const validationHandler = require("../../middlewares/validation.handler");
+	const { fullValidationSchema, simpleValidationSchema, idValidationSchema } = require("../../schemas/products.schema");
+
 // GET Requests
 router.get("/", getProducts); // ./Products
 async function getProducts(request, response, errorHandlers) {
@@ -16,12 +19,12 @@ async function getProducts(request, response, errorHandlers) {
 	}
 }
 
-// ./Products/{productId}
-router.get("/:productId", getProductById);
+// ./Products/{id}
+router.get("/:id", validationHandler(idValidationSchema, "params"), getProductById);
 async function getProductById(request, response, errorHandlers) {
 	try {
-		const { productId } = request.params;
-		const productFound = await service.search(productId);
+		const { id } = request.params;
+		const productFound = await service.search(id);
 		response.status(200).json(productFound);
 	} catch (error) {
 		errorHandlers(error);
@@ -29,7 +32,7 @@ async function getProductById(request, response, errorHandlers) {
 }
 
 // POST Requests
-router.post("/", createProduct); // ./Products
+router.post("/", validationHandler(fullValidationSchema, "body"), createProduct); // ./Products
 async function createProduct(request, response, errorHandlers) {
 	try {
 		const givenProduct = request.body;
@@ -41,11 +44,11 @@ async function createProduct(request, response, errorHandlers) {
 }
 
 // DELETE Requests
-router.delete("/:productId", deleteProduct); // ./Products/{productId}
+router.delete("/:id", validationHandler(idValidationSchema, "params"), deleteProduct); // ./Products/{id}
 async function deleteProduct(request, response, errorHandlers) {
 	try {
-		const { productId } = request.params;
-		const productDeleted = await service.delete(productId);
+		const { id } = request.params;
+		const productDeleted = await service.delete(id);
 		response.status(200).json({message: "El producto se borró correctamente.", productDeleted});
 	} catch (error) {
 		errorHandlers(error);
@@ -53,13 +56,16 @@ async function deleteProduct(request, response, errorHandlers) {
 }
 
 // PATCH Requests
-router.patch("/:productId", simpleUpdateProduct); // ./Products/{id}
+router.patch("/:id",
+	validationHandler(idValidationSchema, "params"),
+	validationHandler(simpleValidationSchema, "body"),
+simpleUpdateProduct); // ./Products/{id}
 async function simpleUpdateProduct(request, response, errorHandlers) {
 	try {
-		const { productId } = request.params;
+		const { id } = request.params;
 		const updateInfo = request.body;
-		const originalProduct = await service.search(productId);
-		const productUpdated = await service.update(productId, updateInfo, "simple update");
+		const originalProduct = await service.search(id);
+		const productUpdated = await service.update(id, updateInfo);
 		response.status(200).json({
 			massage: "El producto se actualizó correctamente.",
 			productBefore: originalProduct,
@@ -71,13 +77,16 @@ async function simpleUpdateProduct(request, response, errorHandlers) {
 }
 
 // PUT Requests
-router.put("/:productId", fullUpdateProduct); // ./Products/{id}
+router.put("/:id",
+	validationHandler(idValidationSchema, "params"),
+	validationHandler(fullValidationSchema, "body"),
+fullUpdateProduct); // ./Products/{id}
 async function fullUpdateProduct(request, response, errorHandlers) {
 	try {
-		const { productId } = request.params;
+		const { id } = request.params;
 		const updateInfo = request.body;
-		const originalProduct = await service.search(productId);
-		const productUpdated = await service.update(productId, updateInfo, "full update");
+		const originalProduct = await service.search(id);
+		const productUpdated = await service.update(id, updateInfo);
 		response.status(200).json({
 			massage: "El producto se actualizó correctamente.",
 			productBefore: originalProduct,

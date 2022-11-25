@@ -1,6 +1,5 @@
 const DATA = require("../data/users.data");
 const boom = require("@hapi/boom");
-const USERS_KEYS_LENGTH = 2;
 
 class UsersService {
 	constructor(){
@@ -32,67 +31,9 @@ class UsersService {
 		});
 	}
 	
-	validate(givenUser, validationType){
+	create(givenUser){
 		return new Promise((resolve, reject) => {
 			try {
-				if (validationType === "full validation") {
-					const hasNameKey = Object.keys(givenUser)[0] === "name";
-					const hasAgeKey = Object.keys(givenUser)[1] === "age";
-					const hasCorrectNumberOfKeys = Object.keys(givenUser).length === USERS_KEYS_LENGTH;
-						const validKeys = hasNameKey && hasAgeKey && hasCorrectNumberOfKeys;
-					
-					const hasStringInName = typeof(givenUser.name) === "string" && givenUser.name.length > 0;
-					const hasNumberInAge = typeof(givenUser.age) === "number" && givenUser.age > 0;
-						const validValues = hasStringInName && hasNumberInAge;
-					
-					const validationResult = validKeys && validValues;
-					
-					if (validationResult) {
-						resolve(validationResult);
-					} else {
-						throw boom.badRequest("Usuario Inválido.");
-					}
-				}
-				
-				else if (validationType === "simple validation") {
-					const hasNameKey = Object.keys(givenUser).includes("name");
-					const hasAgeKey = Object.keys(givenUser).includes("age");
-					let hasAnotherKey = null;
-						Object.keys(givenUser).forEach(key => {
-							if ( (key !== "name") && (key !== "age") ) {
-								hasAnotherKey = true;
-							}
-						});
-					const hasCorrectNumberOfKeys = Object.keys(givenUser).length < USERS_KEYS_LENGTH;
-					const validKeys = (hasNameKey || hasAgeKey) && hasCorrectNumberOfKeys && !hasAnotherKey;
-					
-					const hasStringInName = typeof(givenUser.name) === "string" && givenUser.name.length > 0;
-					const hasNumberInAge = typeof(givenUser.age) === "number" && givenUser.age > 0;
-						let validValues = true;
-							if (hasNameKey) if (!hasStringInName) validValues = false;
-							if (hasAgeKey) if (!hasNumberInAge) validValues = false;
-					
-					const validationResult = validKeys && validValues;
-					if (validationResult) {
-						resolve(validationResult);
-					} else {
-						throw boom.badRequest("Usuario Inválido.");
-					}
-				}
-				
-				else {
-					throw boom.internal("validationType incorrecto.");
-				}
-			} catch (error) {
-				reject(error);
-			}
-		});
-	}
-	
-	create(givenUser){
-		return new Promise(async (resolve, reject) => {
-			try {
-				await this.validate(givenUser, "full validation");
 				const thereAreUsers = this.users.length > 0;
 				let newId = null;
 				if (thereAreUsers) {
@@ -126,14 +67,10 @@ class UsersService {
 		});
 	}
 	
-	update(givenId, givenUpdate, updateType){
+	update(givenId, givenUpdate){
 		return new Promise(async (resolve, reject) => {
 			try {
-				let validationType = null;
-					if (updateType === "simple update") validationType = "simple validation";
-					if (updateType === "full update") validationType = "full validation";
-				await this.validate(givenUpdate, validationType);
-				
+				await this.search(givenId);
 				const user = this.users.find(user => user.id === givenId);
 				const index = this.users.findIndex(user => user.id === givenId);
 				this.users[index] = { ...user, ...givenUpdate };

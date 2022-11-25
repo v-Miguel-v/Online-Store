@@ -1,5 +1,5 @@
 /* Initial & Global Values */
-const { logErrors, boomErrorHandler, serverErrorHandler } = require("./middlewares/errorhandlers.middleware");
+const { logErrors, boomErrorHandler, serverErrorHandler } = require("./middlewares/error.handler");
 const routerApi = require("./routes");
 const express = require("express");
 const app = express();

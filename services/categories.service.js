@@ -1,7 +1,6 @@
 const DATA = require("../data/categories.data");
 const DATA2 = require("../data/products.data");
 const boom = require("@hapi/boom");
-const CATEGORIES_KEYS_LENGTH = 1;
 
 class CategoriesService {
 	constructor(){
@@ -62,63 +61,9 @@ class CategoriesService {
 		});
 	}
 	
-	validate(givenCategory, validationType){
+	create(givenCategory){
 		return new Promise((resolve, reject) => {
 			try {
-				if (validationType === "full validation") {
-					const hasNameKey = Object.keys(givenCategory)[0] === "name";
-					const hasCorrectNumberOfKeys = Object.keys(givenCategory).length === CATEGORIES_KEYS_LENGTH;
-						const validKeys = hasNameKey && hasCorrectNumberOfKeys;
-					
-					const hasStringInName = typeof(givenCategory.name) === "string" && givenCategory.name.length > 0;
-						const validValues = hasStringInName;
-					
-					const validationResult = validKeys && validValues;
-					
-					if (validationResult) {
-						resolve(validationResult);
-					} else {
-						throw boom.badRequest("Categoría Inválida.");
-					}
-				}
-				
-				else if (validationType === "simple validation") {
-					const hasNameKey = Object.keys(givenCategory).includes("name");
-						let hasAnotherKey = null;
-							Object.keys(givenCategory).forEach(key => {
-								if ( (key !== "name") ) {
-									hasAnotherKey = true;
-								}
-							});
-					const hasCorrectNumberOfKeys = Object.keys(givenCategory).length < CATEGORIES_KEYS_LENGTH;
-					const validKeys = ( (hasNameKey) && hasCorrectNumberOfKeys && !hasAnotherKey );
-					
-					const hasStringInName = typeof(givenCategory.name) === "string" && givenCategory.name.length > 0;
-						let validValues = true;
-							if (hasNameKey) if (!hasStringInName) validValues = false;
-					
-					const validationResult = validKeys && validValues;
-					
-					if (validationResult) {
-						resolve(validationResult);
-					} else {
-						throw boom.badRequest("Categoría Inválida.");
-					}
-				}
-				
-				else {
-					throw boom.internal("validationType incorrecto.");
-				}
-			} catch (error) {
-				reject(error);
-			}
-		});
-	}
-	
-	create(givenCategory){
-		return new Promise(async (resolve, reject) => {
-			try {
-				await this.validate(givenCategory, "full validation");
 				const thereAreCategories = this.categories.length > 0;
 				let newId = null;
 				if (thereAreCategories) {
@@ -152,14 +97,10 @@ class CategoriesService {
 		});
 	}
 	
-	update(givenId, givenUpdate, updateType){
+	update(givenId, givenUpdate){
 		return new Promise(async (resolve, reject) => {
 			try {
-				let validationType = null;
-					if (updateType === "simple update") validationType = "simple validation";
-					if (updateType === "full update") validationType = "full validation";
-				await this.validate(givenUpdate, validationType);
-				
+				await this.search(givenId);
 				const category = this.categories.find(category => category.id === givenId);
 				const index = this.categories.findIndex(category => category.id === givenId);
 				this.categories[index] = { ...category, ...givenUpdate };
