@@ -2,11 +2,17 @@
 const { logErrors, boomErrorHandler, serverErrorHandler } = require("./middlewares/error.handler");
 const routerApi = require("./routes");
 const express = require("express");
+const cors = require("cors");
 const app = express();
 const port = 3000;
 app.use(express.json());
 app.listen(port, () => { console.log(`El servidor está corriendo en el puerto ${port}`); });
 routerApi(app);
+
+/* Cross Origins */
+app.use(cors());
+
+/* Middlewares & Handlers */
 app.use(logErrors);
 app.use(boomErrorHandler);
 app.use(serverErrorHandler);
