@@ -21,11 +21,17 @@ app.use(serverErrorHandler);
 // Main Page
 app.get("/", getMainPage);
 function getMainPage(request, response) {
+	
+	const fullUrl = request.protocol + "://" + request.get("host") + request.originalUrl;
+	
 	response.send(`
 		<h1>Servidor de Prueba</h1>
 		<p>El servidor se ha creado satisfactoriamente usando <i>express</i>.</p>
 		<p>Justo ahora no estás en ninguna ruta en concreto, te encuentras en <b>la página principal</b>.</p>
 		<br>
+		<p>${fullUrl}</p>
+		<p>${request.get("host")}</p>
+		<p>${rrequest.originalUrl}</p>
 		<p><u>Prueba a acceder a las siguientes rutas:</u></p>
 		<ul>
 			<li><a href="http://localhost:3000/api/v1/users">Users</a></li>
