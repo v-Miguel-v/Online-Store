@@ -1,4 +1,6 @@
 // File System Module
+
+/*
 const fs = require("fs");
 
 function readRegister(path) {
@@ -32,6 +34,20 @@ const categories = [];
 const categoriesUnparsedData = readRegister("./data/categories.data.txt");
 const categoriesParsedData = parseData(categoriesUnparsedData);
 categoriesParsedData.forEach(category => categories.push(new Category(category.id, category.name)));
+console.group("Categories:");
+	console.table(categories);
+console.groupEnd("Categories:");
+*/
+
+const categories = [
+	{id:"0",name:"Clothing"},
+	{id:"1",name:"Sports"},
+	{id:"2",name:"Cleaning"},
+	{id:"3",name:"Appliances"},
+	{id:"4",name:"Furniture"},
+	{id:"5",name:"Random"}
+];
+
 console.group("Categories:");
 	console.table(categories);
 console.groupEnd("Categories:");

@@ -1,4 +1,6 @@
 // File System Module
+
+/*
 const fs = require("fs");
 
 function readRegister(path) {
@@ -33,6 +35,22 @@ const users = [];
 const usersUnparsedData = readRegister("./data/users.data.txt");
 const usersParsedData = parseData(usersUnparsedData);
 usersParsedData.forEach(user => users.push(new User(user.id, user.name, user.age)));
+
+console.group("Users:");
+	console.table(users);
+console.groupEnd("Users:");
+*/
+
+const users = [
+	{id:"0",name:"Miguel",age:22},
+	{id:"1",name:"Luis",age:25},
+	{id:"2",name:"Gabriela",age:32},
+	{id:"3",name:"Alondra",age:19},
+	{id:"4",name:"Mike",age:18},
+	{id:"5",name:"Rafael",age:40},
+	{id:"6",name:"Oriana",age:20},
+	{id:"7",name:"Ania",age:31}
+];
 
 console.group("Users:");
 	console.table(users);
