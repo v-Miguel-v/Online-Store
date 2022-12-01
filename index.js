@@ -31,7 +31,7 @@ function getMainPage(request, response) {
 		<br>
 		<p>${fullUrl}</p>
 		<p>${request.get("host")}</p>
-		<p>${rrequest.originalUrl}</p>
+		<p>${request.originalUrl}</p>
 		<p><u>Prueba a acceder a las siguientes rutas:</u></p>
 		<ul>
 			<li><a href="http://localhost:3000/api/v1/users">Users</a></li>
