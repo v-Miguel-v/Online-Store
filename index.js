@@ -42,6 +42,8 @@ function getMainPage(request, response) {
 // Example Route
 app.get("/example-route", getExampleRoutePage); 
 function getExampleRoutePage(request, response) {
+	const homeUrl = `${currentProtocol}://${request.get("host")}`;
+	
 	response.send(`
 		<h1>Servidor de Prueba</h1>
 		<p>Ahora te encuentras en <b>la ruta de ejemplo</b>.</p>
