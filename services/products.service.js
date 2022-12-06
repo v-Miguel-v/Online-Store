@@ -1,9 +1,11 @@
 const DATA = require("../data/products.data");
+const DATA2 = require("../data/categories.data");
 const boom = require("@hapi/boom");
 
 class ProductsService {
 	constructor(){
 		this.products = DATA;
+		this.categories = DATA2;
 	}
 	
 	getAll(){
@@ -34,6 +36,11 @@ class ProductsService {
 	create(givenProduct){
 		return new Promise((resolve, reject) => {
 			try {
+				const categoryFound = this.categories.find(category => category.id === givenProduct.category);
+				if (!categoryFound) {
+					throw boom.badRequest("La categoría especificada no es válida.");
+				}				
+				
 				const thereAreProducts = this.products.length > 0;
 				let newId = null;
 				if (thereAreProducts) {
@@ -44,7 +51,7 @@ class ProductsService {
 				if (!thereAreProducts) {
 					newId = "0";
 				}
-				const newProduct = {id: newId, ...givenProduct};
+				const newProduct = {id: newId, ...givenProduct, category: categoryFound.name};
 				this.products.push(newProduct);				
 				resolve(newProduct);
 			} catch (error) {
@@ -71,9 +78,13 @@ class ProductsService {
 		return new Promise(async (resolve, reject) => {
 			try {
 				await this.search(givenId);
+				const categoryFound = this.categories.find(category => category.id === givenUpdate.category);
+				if (!categoryFound) {
+					throw boom.badRequest("La categoría especificada no es válida.");
+				}				
 				const product = this.products.find(product => product.id === givenId);
 				const index = this.products.findIndex(product => product.id === givenId);
-				this.products[index] = { ...product, ...givenUpdate };
+				this.products[index] = { ...product, ...givenUpdate, category: categoryFound.name };
 				const updatedProduct = this.products[index];
 				resolve(updatedProduct);
 			} catch (error) {

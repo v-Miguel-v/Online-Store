@@ -36,8 +36,8 @@ class CategoriesService {
 	getProducts(givenId){
 		return new Promise(async (resolve, reject) => {
 			try {
-				await this.search(givenId);
-				const categoryProducts = this.products.filter(product => product.category.id === givenId);
+				const category = await this.search(givenId);
+				const categoryProducts = this.products.filter(product => product.category === category.name);
 				resolve(categoryProducts);
 			} catch (error) {
 				reject(error);
