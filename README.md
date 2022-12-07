@@ -1,5 +1,5 @@
 # Online Store API
-Una simple API REST de una tiendita online diseñada como resultado del "Curso de Backend con Node.js: API REST con Express.js" de Platzi.
+Una simple API REST de una tiendita online diseñada como resultado del "[Curso de Backend con Node.js: API REST con Express.js](https://platzi.com/cursos/backend-nodejs/)" de Platzi.
 
 ### 📝 Documentación 📝
 La URL Base para consumir la API REST es la siguiente: https://online-store-api.up.railway.app/
