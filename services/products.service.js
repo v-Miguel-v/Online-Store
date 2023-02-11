@@ -78,13 +78,9 @@ class ProductsService {
 		return new Promise(async (resolve, reject) => {
 			try {
 				await this.search(givenId);
-				const categoryFound = this.categories.find(category => category.id === givenUpdate.category);
-				if (!categoryFound) {
-					throw boom.badRequest("La categoría especificada no es válida.");
-				}				
 				const product = this.products.find(product => product.id === givenId);
 				const index = this.products.findIndex(product => product.id === givenId);
-				this.products[index] = { ...product, ...givenUpdate, category: categoryFound.name };
+				this.products[index] = { ...product, ...givenUpdate };
 				const updatedProduct = this.products[index];
 				resolve(updatedProduct);
 			} catch (error) {
