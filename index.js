@@ -7,11 +7,13 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 app.use(express.json());
-app.listen(port, () => { console.log(`El servidor está corriendo en el puerto ${port}`); });
-routerApi(app);
 
 /* Cross Origins */
 app.use(cors());
+
+/* Routing */
+routerApi(app);
+app.listen(port, () => { console.log(`El servidor está corriendo en el puerto ${port}`); });
 
 /* Middlewares & Handlers */
 app.use(logErrors);

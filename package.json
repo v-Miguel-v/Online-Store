@@ -4,7 +4,7 @@
   "description": "Una simple API de una tiendita online diseñada como resultado del \"Curso de Backend con Node.js: API REST con Express.js\" de Platzi.",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
+    "dev": "nodemon -L index.js",
     "start": "node index.js",
     "lint": "eslint"
   },
